@@ -251,8 +251,8 @@ def _(mo):
     measurement_sigma = mo.ui.slider(0.15, 1.5, value=0.7, step=0.05, label="Measurement noise")
     prior_sigma = mo.ui.slider(0.25, 1.8, value=0.95, step=0.05, label="Initial uncertainty")
     measurement_mode = mo.ui.dropdown(
-        options={"x-only sensor": "x-only", "full 2D sensor": "xy"},
-        value="x-only",
+        options=["x-only sensor", "full 2D sensor"],
+        value="x-only sensor",
         label="Measurement model",
     )
     seed = mo.ui.slider(0, 50, value=7, step=1, label="Random seed")
@@ -283,13 +283,14 @@ def _(controls, mo):
 
 @app.cell
 def _(grid_size, measurement_mode, measurement_sigma, motion_sigma, prior_sigma, run_demo, seed, steps):
+    measurement_mode_value = "x-only" if measurement_mode.value == "x-only sensor" else "xy"
     results = run_demo(
         steps=steps.value,
         grid_size=int(grid_size.value),
         motion_sigma=motion_sigma.value,
         measurement_sigma=measurement_sigma.value,
         prior_sigma=prior_sigma.value,
-        measurement_mode=measurement_mode.value,
+        measurement_mode=measurement_mode_value,
         seed=seed.value,
     )
     return (results,)
@@ -311,7 +312,7 @@ def _(mo, results):
 @app.cell
 def _(Ellipse, np, plt, results, step):
     idx = step.value
-    fig, axes = plt.subplots(1, 3, figsize=(16, 5), constrained_layout=True)
+    _fig, _axes = plt.subplots(1, 3, figsize=(16, 5), constrained_layout=True)
     titles = [
         "Markov propagation only",
         "Bayesian histogram filter",
@@ -328,7 +329,7 @@ def _(Ellipse, np, plt, results, step):
         meas_xy = results.measurements[idx]
         meas_label = "2D measurement"
 
-    for ax, title, belief, mean in zip(axes[:2], titles[:2], beliefs, means[:2]):
+    for ax, title, belief, mean in zip(_axes[:2], titles[:2], beliefs, means[:2]):
         ax.imshow(
             belief,
             origin="lower",
@@ -346,7 +347,7 @@ def _(Ellipse, np, plt, results, step):
         ax.set_xlabel("x")
         ax.set_ylabel("y")
 
-    ax = axes[2]
+    ax = _axes[2]
     ax.plot(truth[:, 0], truth[:, 1], "--", color="#4A6FA5", alpha=0.6, linewidth=1.5)
     ax.scatter(*true_xy, color="red", s=65, label="true state")
     ax.scatter(*results.kalman_means[idx], color="#433AB5", s=60, label="KF mean")
@@ -375,33 +376,33 @@ def _(Ellipse, np, plt, results, step):
     ax.set_ylabel("y")
     ax.set_aspect("equal")
 
-    axes[0].legend(loc="upper right", fontsize=8)
-    return fig
+    _axes[0].legend(loc="upper right", fontsize=8)
+    return _fig
 
 
 @app.cell
 def _(plt, results):
-    fig, axes = plt.subplots(1, 2, figsize=(15, 4.5), constrained_layout=True)
+    _fig, _axes = plt.subplots(1, 2, figsize=(15, 4.5), constrained_layout=True)
     t = range(len(results.true_positions))
 
-    axes[0].plot(t, results.markov_errors, label="Markov only", linewidth=2)
-    axes[0].plot(t, results.bayes_errors, label="Bayes filter", linewidth=2)
-    axes[0].plot(t, results.kalman_errors, label="Kalman filter", linewidth=2)
-    axes[0].set_title("Position error over time")
-    axes[0].set_xlabel("time step")
-    axes[0].set_ylabel("Euclidean error")
-    axes[0].grid(alpha=0.25)
-    axes[0].legend()
+    _axes[0].plot(t, results.markov_errors, label="Markov only", linewidth=2)
+    _axes[0].plot(t, results.bayes_errors, label="Bayes filter", linewidth=2)
+    _axes[0].plot(t, results.kalman_errors, label="Kalman filter", linewidth=2)
+    _axes[0].set_title("Position error over time")
+    _axes[0].set_xlabel("time step")
+    _axes[0].set_ylabel("Euclidean error")
+    _axes[0].grid(alpha=0.25)
+    _axes[0].legend()
 
-    axes[1].plot(t, results.markov_entropy, label="Markov entropy", linewidth=2)
-    axes[1].plot(t, results.bayes_entropy, label="Bayes entropy", linewidth=2)
-    axes[1].plot(t, results.kalman_trace, label="KF covariance trace", linewidth=2)
-    axes[1].set_title("Uncertainty trend")
-    axes[1].set_xlabel("time step")
-    axes[1].set_ylabel("uncertainty metric")
-    axes[1].grid(alpha=0.25)
-    axes[1].legend()
-    return fig
+    _axes[1].plot(t, results.markov_entropy, label="Markov entropy", linewidth=2)
+    _axes[1].plot(t, results.bayes_entropy, label="Bayes entropy", linewidth=2)
+    _axes[1].plot(t, results.kalman_trace, label="KF covariance trace", linewidth=2)
+    _axes[1].set_title("Uncertainty trend")
+    _axes[1].set_xlabel("time step")
+    _axes[1].set_ylabel("uncertainty metric")
+    _axes[1].grid(alpha=0.25)
+    _axes[1].legend()
+    return _fig
 
 
 @app.cell
