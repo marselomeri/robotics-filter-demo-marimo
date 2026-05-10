@@ -243,8 +243,8 @@ def _(mo):
 def _(mo):
     steps = mo.ui.slider(12, 40, value=24, step=1, label="Number of time steps")
     grid_size = mo.ui.dropdown(
-        options={"21": 21, "25": 25, "31": 31},
-        value=25,
+        options=["21", "25", "31"],
+        value="25",
         label="Grid resolution",
     )
     motion_sigma = mo.ui.slider(0.15, 1.2, value=0.55, step=0.05, label="Motion noise")
@@ -285,7 +285,7 @@ def _(controls, mo):
 def _(grid_size, measurement_mode, measurement_sigma, motion_sigma, prior_sigma, run_demo, seed, steps):
     results = run_demo(
         steps=steps.value,
-        grid_size=grid_size.value,
+        grid_size=int(grid_size.value),
         motion_sigma=motion_sigma.value,
         measurement_sigma=measurement_sigma.value,
         prior_sigma=prior_sigma.value,
