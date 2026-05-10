@@ -29,7 +29,13 @@ marimo run filter_demo_app.py
 
 marimo's official docs say notebooks hosted on GitHub can be opened by appending the GitHub file URL to `molab.marimo.io`.
 
-Once this file is on GitHub, the pattern is:
+This project is now published here:
+
+- Repo: `https://github.com/marselomeri/robotics-filter-demo-marimo`
+- Notebook file: `https://github.com/marselomeri/robotics-filter-demo-marimo/blob/main/filter_demo_app.py`
+- Open directly in mo lab: `https://molab.marimo.io/github/marselomeri/robotics-filter-demo-marimo/blob/main/filter_demo_app.py`
+
+In general, the pattern is:
 
 ```text
 https://molab.marimo.io/github/<owner>/<repo>/blob/main/filter_demo_app.py
